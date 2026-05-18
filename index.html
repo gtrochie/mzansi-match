@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Mzansi Match</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blush:#F2BFBF;--blush-light:#FDF0F0;
+  --rose:#C0405A;--rose-dark:#7A1A2E;--rose-deep:#3D0A16;
+  --petal-dark:#A83248;
+  --cream:#FDF8F3;--cream-dark:#F0E6D8;
+  --gold:#C9902A;--gold-light:#F5E6C8;--gold-dark:#7A5510;
+  --sage:#2D5A3D;--sage-light:#D4EDE0;
+  --ink:#1A0A0E;--muted:#8A6070;--border:#E8D0D8;
+  --warm-white:#FFFBFC;
+}
+body{font-family:'Lato',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+h1,h2,h3{font-family:'Playfair Display',serif}
+.screen{display:none;animation:fadeUp 0.4s ease forwards}
+.screen.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.hearts-bg{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;z-index:0}
+.heart-float{position:absolute;color:rgba(192,64,90,0.08);animation:floatH linear infinite}
+@keyframes floatH{0%{transform:translateY(100%) rotate(0deg);opacity:0}10%{opacity:1}90%{opacity:0.4}100%{transform:translateY(-120px) rotate(20deg);opacity:0}}
+
+/* LANDING */
+.landing{background:var(--rose-deep);min-height:100vh;position:relative;display:flex;flex-direction:column}
+.l-inner{position:relative;z-index:1;padding:3rem 2.5rem;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.logo-lk{display:flex;align-items:center;gap:0.6rem;margin-bottom:2.5rem}
+.logo-h{color:var(--blush);font-size:1.4rem}
+.logo-t{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--blush);letter-spacing:0.06em}
+.landing h1{font-size:2.8rem;line-height:1.1;color:var(--warm-white);margin-bottom:1rem}
+.landing h1 em{color:var(--blush);font-style:italic}
+.l-sub{font-size:0.97rem;color:#D4A8B0;line-height:1.75;max-width:460px;margin-bottom:0.5rem}
+.t-chip{display:inline-block;background:rgba(242,191,191,0.12);border:1px solid rgba(242,191,191,0.25);color:var(--blush);font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;padding:0.3rem 0.9rem;border-radius:20px;margin-bottom:1rem}
+.stat-bar{display:flex;gap:2rem;margin:1.8rem 0;flex-wrap:wrap}
+.stat-i{border-left:2px solid var(--rose);padding-left:1rem}
+.stat-n{font-family:'Playfair Display',serif;font-size:1.9rem;color:var(--warm-white);line-height:1}
+.stat-l{font-size:0.68rem;color:#D4A8B0;text-transform:uppercase;letter-spacing:0.1em;margin-top:2px}
+.l-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1.8rem}
+.btn-love{background:var(--rose);color:var(--warm-white);border:none;padding:0.9rem 2rem;font-family:'Playfair Display',serif;font-size:0.97rem;font-style:italic;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.btn-love:hover{background:var(--petal-dark);transform:translateY(-1px)}
+.btn-ghost{background:transparent;color:var(--blush);border:1px solid rgba(242,191,191,0.3);padding:0.9rem 1.8rem;font-family:'Lato',sans-serif;font-size:0.88rem;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.btn-ghost:hover{border-color:var(--blush)}
+.l-pills{display:flex;gap:0.55rem;flex-wrap:wrap;margin-top:2rem}
+.lp{font-size:0.7rem;padding:0.28rem 0.8rem;border:1px solid rgba(255,255,255,0.1);border-radius:20px;color:#C4A0A8}
+.l-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-top:2rem;border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem}
+.l-quote{font-family:'Playfair Display',serif;font-style:italic;font-size:0.83rem;color:#C4A0A8;max-width:340px}
+
+/* PAGE HEADER */
+.ph{background:var(--rose-deep);padding:1.8rem 2.5rem;position:relative;overflow:hidden}
+.ph::after{content:'♥';position:absolute;right:1.5rem;top:50%;transform:translateY(-50%);font-size:5rem;color:rgba(242,191,191,0.06);pointer-events:none}
+.ph h2{color:var(--warm-white);font-size:1.6rem;margin-bottom:0.25rem;margin-top:0.4rem}
+.ph p{color:#D4A8B0;font-size:0.85rem}
+
+/* TABS */
+.tabs{display:flex;background:var(--cream-dark);border-bottom:1px solid var(--border)}
+.tab{flex:1;padding:0.85rem;text-align:center;font-size:0.83rem;font-weight:700;color:var(--muted);border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;transition:all 0.2s;font-family:'Lato',sans-serif}
+.tab.active{color:var(--rose);border-bottom-color:var(--rose);background:var(--warm-white)}
+
+/* SETUP */
+.sb{padding:1.8rem 2.5rem;background:var(--warm-white)}
+.uf{display:flex;flex-direction:column;gap:1rem}
+.fg label{display:block;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:0.4rem}
+.fg input,.fg select{width:100%;padding:0.75rem 0.9rem;border:1px solid var(--border);background:var(--cream);font-family:'Lato',sans-serif;font-size:0.9rem;color:var(--ink);border-radius:3px;outline:none;transition:border-color 0.2s}
+.fg input:focus,.fg select:focus{border-color:var(--rose)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.btn-cont{background:var(--rose);color:var(--warm-white);border:none;padding:0.85rem 2rem;font-family:'Playfair Display',serif;font-size:0.92rem;font-style:italic;cursor:pointer;border-radius:3px;transition:all 0.2s;margin-top:0.3rem;width:100%}
+.btn-cont:hover{background:var(--petal-dark)}
+
+/* QUIZ */
+.qt{padding:1.1rem 2.5rem 0;background:var(--warm-white)}
+.qwho{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.9rem}
+.who-b{display:flex;align-items:center;gap:0.65rem}
+.av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;border:2px solid}
+.av-a{background:var(--blush-light);color:var(--rose);border-color:var(--blush)}
+.av-b{background:var(--sage-light);color:var(--sage);border-color:#9FD4B8}
+.wname{font-weight:700;font-size:0.92rem;color:var(--ink)}
+.wsub{font-size:0.7rem;color:var(--muted)}
+.sbadge{font-size:0.72rem;color:var(--muted);background:var(--cream-dark);padding:0.22rem 0.75rem;border-radius:20px}
+.pbar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:0 0 0.35rem}
+.pfill{height:100%;background:var(--rose);border-radius:2px;transition:width 0.4s ease}
+.plabel{font-size:0.7rem;color:var(--muted);text-align:right;padding-bottom:0.5rem}
+
+.qp{padding:1.3rem 2.5rem;background:var(--warm-white)}
+.cchip{display:inline-block;padding:0.26rem 0.75rem;border-radius:20px;font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.7rem}
+.cc-v{background:var(--blush-light);color:var(--rose-dark)}
+.cc-l{background:var(--sage-light);color:var(--sage)}
+.cc-r{background:var(--gold-light);color:var(--gold-dark)}
+.cc-s{background:#EDE0FF;color:#4A1D96}
+.cc-p{background:#E0F0FF;color:#1A3A6B}
+.cc-i{background:#FFF3E0;color:#7A3B00}
+.db-flag{display:inline-flex;align-items:center;gap:0.35rem;background:#FFF8E1;border:1px solid #FFD54F;color:#6D4C00;font-size:0.68rem;padding:0.2rem 0.6rem;border-radius:20px;margin-bottom:0.6rem;font-weight:700;margin-left:0.4rem}
+.qnum{font-size:0.7rem;color:var(--muted);font-weight:700;margin-bottom:0.3rem;letter-spacing:0.05em}
+.qtext{font-family:'Playfair Display',serif;font-size:1.25rem;line-height:1.35;color:var(--ink);margin-bottom:0.4rem}
+.qsub{font-size:0.81rem;color:var(--muted);line-height:1.6;margin-bottom:1.2rem}
+.opts{display:flex;flex-direction:column;gap:0.6rem}
+.opt{display:flex;align-items:center;gap:0.85rem;padding:0.8rem 1rem;border:1.5px solid var(--border);background:var(--cream);border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.86rem;color:var(--ink);transition:all 0.15s;text-align:left;width:100%}
+.opt:hover{border-color:var(--rose);background:var(--blush-light)}
+.opt.sel{border-color:var(--rose);background:var(--blush-light);font-weight:700}
+.odot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.65rem;transition:all 0.15s}
+.opt.sel .odot{background:var(--rose);border-color:var(--rose);color:white}
+.opt.sel .odot::after{content:'♥'}
+.srow{display:flex;gap:0.45rem;flex-wrap:wrap}
+.sbtn{width:40px;height:40px;border:1.5px solid var(--border);border-radius:4px;cursor:pointer;font-family:'Lato',sans-serif;font-size:0.88rem;font-weight:700;background:var(--cream);color:var(--ink);transition:all 0.15s}
+.sbtn:hover{border-color:var(--rose)}
+.sbtn.sel{background:var(--rose);border-color:var(--rose);color:white}
+.slabs{display:flex;justify-content:space-between;margin-top:0.3rem;font-size:0.67rem;color:var(--muted)}
+
+.qnav{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 2.5rem;border-top:1px solid var(--border);background:var(--warm-white)}
+.btn-back{background:transparent;border:1px solid var(--border);padding:0.65rem 1.3rem;font-family:'Lato',sans-serif;font-size:0.86rem;color:var(--muted);cursor:pointer;border-radius:3px;transition:all 0.2s}
+.btn-back:hover{border-color:var(--rose);color:var(--rose)}
+.btn-next{background:var(--rose);border:none;padding:0.65rem 1.6rem;font-family:'Playfair Display',serif;font-size:0.9rem;font-style:italic;color:var(--warm-white);cursor:pointer;border-radius:3px;transition:all 0.2s}
+.btn-next:hover{background:var(--petal-dark)}
+.btn-next:disabled{opacity:0.35;cursor:not-allowed}
+
+/* TRANSITION */
+.trans{background:var(--rose-deep);min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 2.5rem}
+.trans h2{font-size:1.8rem;color:var(--warm-white);margin-bottom:0.75rem}
+.trans p{color:#D4A8B0;max-width:360px;line-height:1.75;margin-bottom:2rem;font-size:0.9rem}
+.lock-r{width:64px;height:64px;border:2px solid var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin:0 auto 2rem}
+
+/* RESULTS */
+.rhead{background:var(--rose-deep);padding:2.2rem 2.5rem 2.8rem;position:relative;overflow:hidden}
+.rhead::before{content:'♥';position:absolute;right:1.5rem;bottom:-1rem;font-size:8rem;color:rgba(242,191,191,0.04);pointer-events:none}
+.score-w{display:flex;align-items:center;gap:2rem;flex-wrap:wrap;margin-top:1.3rem}
+.sring{position:relative;width:110px;height:110px;flex-shrink:0}
+.sring svg{transform:rotate(-90deg)}
+.ring-in{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.ring-n{font-family:'Playfair Display',serif;font-size:2rem;color:var(--warm-white);line-height:1}
+.ring-l{font-size:0.6rem;color:#D4A8B0;text-transform:uppercase;letter-spacing:0.1em}
+.smeta h2{font-size:1.4rem;color:var(--warm-white);margin-bottom:0.35rem}
+.smeta p{color:#D4A8B0;font-size:0.84rem;line-height:1.65;max-width:300px}
+.bpill{display:inline-block;padding:0.25rem 0.9rem;border-radius:20px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem}
+.bp-hi{background:rgba(45,90,61,0.45);color:#6FCF97}
+.bp-mi{background:rgba(201,144,42,0.35);color:#F2C94C}
+.bp-lo{background:rgba(192,64,90,0.4);color:#FFAABC}
+
+.rb{padding:1.8rem 2.5rem;background:var(--warm-white)}
+.slabel{font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.14em;color:var(--muted);margin-bottom:0.85rem;padding-bottom:0.45rem;border-bottom:1px solid var(--border);margin-top:1.5rem}
+.slabel:first-child{margin-top:0}
+
+.db-alert{background:var(--blush-light);border:1px solid #F5B8C0;border-radius:4px;padding:1.1rem 1.4rem;margin-bottom:1.6rem;display:flex;gap:0.85rem}
+.db-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.db-body h4{font-size:0.88rem;font-weight:700;color:var(--rose-dark);margin-bottom:0.25rem}
+.db-body p{font-size:0.81rem;color:var(--rose-dark);line-height:1.55}
+
+.bkdown{margin-bottom:0.5rem}
+.bki{margin-bottom:1rem}
+.bktop{display:flex;justify-content:space-between;margin-bottom:0.3rem}
+.bkname{font-size:0.86rem;font-weight:700;color:var(--ink)}
+.bkpct{font-size:0.81rem;color:var(--muted)}
+.bkbar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.bkfill{height:100%;border-radius:3px;transition:width 1.1s ease}
+.bf1{background:var(--rose)}.bf2{background:var(--sage)}.bf3{background:var(--gold)}.bf4{background:#7C3AED}.bf5{background:#1D4ED8}
+
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-bottom:0.5rem}
+.acard{padding:0.9rem 1rem;border-radius:4px;border:1px solid}
+.acard.good{background:#F0FFF7;border-color:#9AE6B4}
+.acard.watch{background:#FFFBF0;border-color:#F6E05E}
+.at{font-size:0.67rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.4rem}
+.at.agree{color:var(--sage)}.at.warn{color:#92400E}
+.atext{font-size:0.81rem;line-height:1.55;color:var(--ink)}
+
+.slist{margin-bottom:0.5rem}
+.starter{display:flex;gap:0.85rem;padding:0.9rem 0;border-bottom:1px solid var(--border)}
+.starter:last-child{border-bottom:none}
+.stnum{width:24px;height:24px;border:1.5px solid var(--rose);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--rose);flex-shrink:0;margin-top:1px}
+.sttext{font-family:'Playfair Display',serif;font-style:italic;font-size:0.88rem;line-height:1.6;color:var(--ink)}
+
+.cbox{background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:1.1rem 1.3rem;margin-bottom:0.5rem}
+.crow{display:flex;justify-content:space-between;align-items:flex-start;padding:0.5rem 0;border-bottom:1px solid var(--border);gap:1rem}
+.crow:last-child{border-bottom:none}
+.ck{font-size:0.81rem;color:var(--muted);font-weight:700;flex-shrink:0}
+.cv{font-size:0.81rem;font-weight:700;display:flex;align-items:center;gap:0.4rem;color:var(--ink);text-align:right;flex-wrap:wrap;justify-content:flex-end}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}.dg{background:#38A169}.da{background:#D69E2E}
+
+.cta{background:var(--rose-deep);border-radius:6px;padding:1.8rem;text-align:center;margin-top:1.8rem}
+.cta h3{font-size:1.25rem;color:var(--warm-white);margin-bottom:0.4rem}
+.cta p{color:#D4A8B0;font-size:0.83rem;margin-bottom:1.3rem;line-height:1.65}
+.prow{display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;margin-bottom:1.3rem}
+.pc{background:rgba(255,255,255,0.07);border:1px solid rgba(242,191,191,0.2);border-radius:4px;padding:0.7rem 1.1rem;font-size:0.81rem;color:#D4A8B0}
+.pc strong{display:block;font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--blush);margin-bottom:0.12rem}
+.cta-btns{display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap}
+.btn-cm{background:var(--rose);color:var(--warm-white);border:none;padding:0.8rem 1.6rem;font-family:'Playfair Display',serif;font-style:italic;font-size:0.92rem;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.btn-cm:hover{background:var(--petal-dark)}
+.btn-cg{background:transparent;color:var(--blush);border:1px solid rgba(242,191,191,0.25);padding:0.8rem 1.4rem;font-family:'Lato',sans-serif;font-size:0.85rem;cursor:pointer;border-radius:3px;transition:all 0.2s}
+.btn-cg:hover{border-color:var(--blush)}
+</style>
+
+<!-- LANDING -->
+<div id="sc-land" class="screen active">
+<div class="landing">
+  <div class="hearts-bg" id="hbg"></div>
+  <div class="l-inner">
+    <div>
+      <div class="logo-lk"><span class="logo-h">♥</span><span class="logo-t">Mzansi Match</span></div>
+      <div class="t-chip">Built for South Africa · Gebou vir Mzansi</div>
+      <h1>Know before<br>the first <em>date.</em></h1>
+      <p class="l-sub">15 honest questions — money, allowance, gender roles, loyalty, religion, family and intimacy. Built for love in Mzansi. Takes under 5 minutes.</p>
+      <div class="stat-bar">
+        <div class="stat-i"><div class="stat-n">15</div><div class="stat-l">Questions</div></div>
+        <div class="stat-i"><div class="stat-n">14</div><div class="stat-l">Cultures</div></div>
+        <div class="stat-i"><div class="stat-n">5 min</div><div class="stat-l">To complete</div></div>
+      </div>
+      <div class="l-btns">
+        <button class="btn-love" onclick="goTo('sc-setup')">Begin our check ♥</button>
+        <button class="btn-ghost" onclick="runDemo()">See a sample report</button>
+      </div>
+      <div class="l-pills">
+        <div class="lp">WhatsApp groups</div><div class="lp">University socs</div>
+        <div class="lp">Tinder & Bumble</div><div class="lp">Matchmakers</div><div class="lp">Church groups</div>
+      </div>
+    </div>
+    <div class="l-footer">
+      <div class="l-quote">"Most relationships don't fail from missing chemistry — they fail from mismatched expectations."</div>
+      <div style="font-size:0.73rem;color:#8A6070">Mzansi Match · 2026</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- SETUP -->
+<div id="sc-setup" class="screen">
+  <div class="ph"><div class="logo-lk"><span class="logo-h">♥</span><span class="logo-t">Mzansi Match</span></div><h2>Two hearts. One check.</h2><p>Each person answers privately. Results revealed together.</p></div>
+  <div class="tabs"><button class="tab active" id="tb-a" onclick="switchTab('a')">♥ Person A</button><button class="tab" id="tb-b" onclick="switchTab('b')">♥ Person B</button></div>
+  <div class="sb">
+    <div id="form-a" class="uf">
+      <div class="fg-row">
+        <div class="fg"><label>First name</label><input id="na" type="text" placeholder="e.g. Thandi"></div>
+        <div class="fg"><label>Age</label><input id="aa" type="number" placeholder="25" min="18" max="70"></div>
+      </div>
+      <div class="fg"><label>Gender</label>
+        <select id="ga"><option value="">Select...</option><option>Woman</option><option>Man</option><option>Non-binary</option><option>Prefer not to say</option></select>
+      </div>
+      <div class="fg"><label>City / Town</label>
+        <select id="ca"><option value="">Select...</option>
+          <optgroup label="Gauteng"><option>Johannesburg</option><option>Pretoria</option><option>Soweto</option><option>Sandton</option><option>Midrand</option><option>Centurion</option><option>Boksburg</option><option>Benoni</option><option>Germiston</option><option>Krugersdorp</option><option>Vanderbijlpark</option><option>Vereeniging</option></optgroup>
+          <optgroup label="Western Cape"><option>Cape Town</option><option>Stellenbosch</option><option>Paarl</option><option>George</option><option>Worcester</option><option>Knysna</option><option>Mossel Bay</option></optgroup>
+          <optgroup label="KwaZulu-Natal"><option>Durban</option><option>Pietermaritzburg</option><option>Richards Bay</option><option>Newcastle</option><option>Ladysmith</option><option>Ulundi</option></optgroup>
+          <optgroup label="Eastern Cape"><option>Port Elizabeth (Gqeberha)</option><option>East London</option><option>Mthatha</option><option>Grahamstown (Makhanda)</option></optgroup>
+          <optgroup label="Limpopo"><option>Polokwane</option><option>Tzaneen</option><option>Thohoyandou</option><option>Giyani</option><option>Louis Trichardt</option></optgroup>
+          <optgroup label="Mpumalanga"><option>Nelspruit (Mbombela)</option><option>Witbank (eMalahleni)</option><option>Secunda</option><option>Middelburg</option></optgroup>
+          <optgroup label="North West"><option>Rustenburg</option><option>Mahikeng</option><option>Potchefstroom</option><option>Klerksdorp</option></optgroup>
+          <optgroup label="Free State"><option>Bloemfontein</option><option>Welkom</option><option>Phuthaditjhaba</option><option>Sasolburg</option></optgroup>
+          <optgroup label="Northern Cape"><option>Kimberley</option><option>Upington</option><option>Springbok</option></optgroup>
+          <option>Other / Small town</option>
+        </select>
+      </div>
+      <div class="fg"><label>Cultural background</label>
+        <select id="cua"><option value="">Select...</option><option>Zulu</option><option>Xhosa</option><option>Ndebele</option><option>Venda</option><option>Pedi (Sepedi)</option><option>Sotho (Sesotho)</option><option>Tswana</option><option>Tsonga</option><option>Lobedu</option><option>Afrikaner</option><option>English-speaking South African</option><option>Indian South African</option><option>Coloured</option><option>Mixed heritage</option><option>Other</option><option>Prefer not to say</option></select>
+      </div>
+      <div class="fg"><label>Religion</label>
+        <select id="ra"><option value="">Select...</option><option>Christian — mainline</option><option>Christian — charismatic / pentecostal</option><option>Christian — Zionist / African Independent Church</option><option>Muslim</option><option>Hindu</option><option>Jewish</option><option>Traditional African beliefs</option><option>No religion / Atheist</option><option>Other</option></select>
+      </div>
+      <button class="btn-cont" onclick="switchTab('b')">Continue to Person B ♥</button>
+    </div>
+    <div id="form-b" class="uf" style="display:none">
+      <div class="fg-row">
+        <div class="fg"><label>First name</label><input id="nb" type="text" placeholder="e.g. Sipho"></div>
+        <div class="fg"><label>Age</label><input id="ab" type="number" placeholder="28" min="18" max="70"></div>
+      </div>
+      <div class="fg"><label>Gender</label>
+        <select id="gb"><option value="">Select...</option><option>Woman</option><option>Man</option><option>Non-binary</option><option>Prefer not to say</option></select>
+      </div>
+      <div class="fg"><label>City / Town</label>
+        <select id="cb"><option value="">Select...</option>
+          <optgroup label="Gauteng"><option>Johannesburg</option><option>Pretoria</option><option>Soweto</option><option>Sandton</option><option>Midrand</option><option>Centurion</option><option>Boksburg</option><option>Benoni</option><option>Germiston</option><option>Krugersdorp</option><option>Vanderbijlpark</option><option>Vereeniging</option></optgroup>
+          <optgroup label="Western Cape"><option>Cape Town</option><option>Stellenbosch</option><option>Paarl</option><option>George</option><option>Worcester</option><option>Knysna</option><option>Mossel Bay</option></optgroup>
+          <optgroup label="KwaZulu-Natal"><option>Durban</option><option>Pietermaritzburg</option><option>Richards Bay</option><option>Newcastle</option><option>Ladysmith</option><option>Ulundi</option></optgroup>
+          <optgroup label="Eastern Cape"><option>Port Elizabeth (Gqeberha)</option><option>East London</option><option>Mthatha</option><option>Grahamstown (Makhanda)</option></optgroup>
+          <optgroup label="Limpopo"><option>Polokwane</option><option>Tzaneen</option><option>Thohoyandou</option><option>Giyani</option><option>Louis Trichardt</option></optgroup>
+          <optgroup label="Mpumalanga"><option>Nelspruit (Mbombela)</option><option>Witbank (eMalahleni)</option><option>Secunda</option><option>Middelburg</option></optgroup>
+          <optgroup label="North West"><option>Rustenburg</option><option>Mahikeng</option><option>Potchefstroom</option><option>Klerksdorp</option></optgroup>
+          <optgroup label="Free State"><option>Bloemfontein</option><option>Welkom</option><option>Phuthaditjhaba</option><option>Sasolburg</option></optgroup>
+          <optgroup label="Northern Cape"><option>Kimberley</option><option>Upington</option><option>Springbok</option></optgroup>
+          <option>Other / Small town</option>
+        </select>
+      </div>
+      <div class="fg"><label>Cultural background</label>
+        <select id="cub"><option value="">Select...</option><option>Zulu</option><option>Xhosa</option><option>Ndebele</option><option>Venda</option><option>Pedi (Sepedi)</option><option>Sotho (Sesotho)</option><option>Tswana</option><option>Tsonga</option><option>Lobedu</option><option>Afrikaner</option><option>English-speaking South African</option><option>Indian South African</option><option>Coloured</option><option>Mixed heritage</option><option>Other</option><option>Prefer not to say</option></select>
+      </div>
+      <div class="fg"><label>Religion</label>
+        <select id="rb"><option value="">Select...</option><option>Christian — mainline</option><option>Christian — charismatic / pentecostal</option><option>Christian — Zionist / African Independent Church</option><option>Muslim</option><option>Hindu</option><option>Jewish</option><option>Traditional African beliefs</option><option>No religion / Atheist</option><option>Other</option></select>
+      </div>
+      <button class="btn-cont" onclick="startQuiz()">Begin the quiz ♥</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ A -->
+<div id="sc-qa" class="screen">
+  <div class="qt">
+    <div class="qwho">
+      <div class="who-b"><div class="av av-a" id="av-a">T</div><div><div class="wname" id="wn-a">Person A</div><div class="wsub">Answering privately</div></div></div>
+      <div class="sbadge">Step 1 of 2</div>
+    </div>
+    <div class="pbar"><div class="pfill" id="pf-a" style="width:0%"></div></div>
+    <div class="plabel" id="pl-a">0 of 15 answered</div>
+  </div>
+  <div id="qp-a" class="qp"></div>
+  <div class="qnav"><button class="btn-back" onclick="prevQ('a')">← Back</button><button class="btn-next" id="bn-a" onclick="nextQ('a')" disabled>Next ♥</button></div>
+</div>
+
+<!-- TRANSITION -->
+<div id="sc-trans" class="screen">
+  <div class="trans">
+    <div class="logo-lk" style="justify-content:center;margin-bottom:2rem"><span class="logo-h">♥</span><span class="logo-t">Mzansi Match</span></div>
+    <div class="lock-r">🔒</div>
+    <h2><span id="tname">Person A</span>'s heart is sealed</h2>
+    <p>Their answers are private and locked. Hand the device to Person B — they answer independently, without peeking.</p>
+    <button class="btn-love" onclick="startQuizB()" style="margin-top:0.5rem">Hand to Person B ♥</button>
+  </div>
+</div>
+
+<!-- QUIZ B -->
+<div id="sc-qb" class="screen">
+  <div class="qt">
+    <div class="qwho">
+      <div class="who-b"><div class="av av-b" id="av-b">S</div><div><div class="wname" id="wn-b">Person B</div><div class="wsub">Answering privately</div></div></div>
+      <div class="sbadge">Step 2 of 2</div>
+    </div>
+    <div class="pbar"><div class="pfill" id="pf-b" style="width:0%"></div></div>
+    <div class="plabel" id="pl-b">0 of 15 answered</div>
+  </div>
+  <div id="qp-b" class="qp"></div>
+  <div class="qnav"><button class="btn-back" onclick="prevQ('b')">← Back</button><button class="btn-next" id="bn-b" onclick="nextQ('b')" disabled>Reveal our score ♥</button></div>
+</div>
+
+<!-- RESULTS -->
+<div id="sc-results" class="screen">
+  <div class="rhead">
+    <div class="logo-lk"><span class="logo-h">♥</span><span class="logo-t">Mzansi Match — Love Report</span></div>
+    <div class="score-w">
+      <div class="sring">
+        <svg width="110" height="110" viewBox="0 0 110 110">
+          <circle cx="55" cy="55" r="47" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+          <circle cx="55" cy="55" r="47" fill="none" stroke="#C0405A" stroke-width="6" stroke-linecap="round"
+            id="sarc" stroke-dasharray="295.3" stroke-dashoffset="295.3"/>
+        </svg>
+        <div class="ring-in"><div class="ring-n" id="rn">—</div><div class="ring-l">/ 100</div></div>
+      </div>
+      <div class="smeta">
+        <div id="bpill" class="bpill bp-hi">High compatibility</div>
+        <h2 id="sch">Calculating...</h2>
+        <p id="scs"></p>
+      </div>
+    </div>
+  </div>
+  <div class="rb">
+    <div id="dbz"></div>
+    <div class="slabel">Compatibility by category</div>
+    <div class="bkdown">
+      <div class="bki"><div class="bktop"><span class="bkname">Values &amp; life goals</span><span class="bkpct" id="pv">—</span></div><div class="bkbar"><div class="bkfill bf1" id="bv" style="width:0%"></div></div></div>
+      <div class="bki"><div class="bktop"><span class="bkname">Lifestyle &amp; money</span><span class="bkpct" id="pli">—</span></div><div class="bkbar"><div class="bkfill bf2" id="bli" style="width:0%"></div></div></div>
+      <div class="bki"><div class="bktop"><span class="bkname">Relationship expectations</span><span class="bkpct" id="pr">—</span></div><div class="bkbar"><div class="bkfill bf3" id="br" style="width:0%"></div></div></div>
+      <div class="bki"><div class="bktop"><span class="bkname">Faith &amp; culture</span><span class="bkpct" id="pf">—</span></div><div class="bkbar"><div class="bkfill bf4" id="bf" style="width:0%"></div></div></div>
+      <div class="bki"><div class="bktop"><span class="bkname">Power &amp; respect</span><span class="bkpct" id="pp">—</span></div><div class="bkbar"><div class="bkfill bf5" id="bpp" style="width:0%"></div></div></div>
+    </div>
+    <div class="slabel">Where you align vs. where to talk</div>
+    <div class="agrid" id="ag"></div>
+    <div class="slabel">Conversation starters for date one</div>
+    <div class="slist" id="sl"></div>
+    <div class="slabel">Cultural &amp; religious context</div>
+    <div class="cbox" id="cb-box"></div>
+    <div class="cta">
+      <h3>Unlock the full love report</h3>
+      <p>This preview shows your headline score. The full report includes deeper cultural analysis, a 6-month relationship forecast, and a personalised date-one guide.</p>
+      <div class="prow">
+        <div class="pc"><strong>R99</strong>Single full report</div>
+        <div class="pc"><strong>R399</strong>5-pack · save R96</div>
+        <div class="pc"><strong>R2/check</strong>B2B API</div>
+      </div>
+      <div class="cta-btns">
+        <button class="btn-cm" onclick="alert('Paystack coming in week 3!')">Get full report — R99 ♥</button>
+        <button class="btn-cg" onclick="goTo('sc-land')">Start a new check</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const QS=[
+  // DEAL-BREAKERS FIRST
+  {id:'want_kids',cat:'values',w:3,db:true,
+   text:'Do you want to have children?',
+   sub:'Deal-breaker — a hard mismatch here forces the score to zero.',
+   opts:['Yes — definitely want kids','Yes, flexible on timing','Open to it, still deciding','No — child-free by choice']},
+  {id:'intention',cat:'values',w:3,db:true,
+   text:'What kind of relationship are you looking for right now?',
+   sub:'Deal-breaker. Be honest with yourself — and them.',
+   opts:['Something serious and long-term','Serious, but taking it slow','Casual — fun without pressure','Still figuring it out']},
+  {id:'monogamy',cat:'relationship',w:3,db:true,
+   text:'What are your monogamy expectations?',
+   sub:'Deal-breaker. Honesty is the kindest thing here.',
+   opts:['Strictly monogamous — non-negotiable','Monogamous, open to honest conversation','Open to ethical non-monogamy','Polyamorous']},
+  {id:'man_cheat',cat:'power',w:3,db:true,
+   text:'Do you believe cheating is ever acceptable?',
+   sub:'Deal-breaker. Some people privately hold different views — this is the space to be honest.',
+   opts:['Never — cheating is always a betrayal','No, but I understand how temptation happens','It depends on the situation','I think it\'s a natural part of human behaviour']},
+
+  // VALUES
+  {id:'marriage',cat:'values',w:2,db:false,
+   text:'What is your marriage timeline?',
+   sub:'When do you see yourself getting married, if at all?',
+   opts:['Within 1–2 years','Within 3–5 years','Someday, no rush','Marriage is not for me']},
+  {id:'have_kids',cat:'values',w:2,db:false,
+   text:'Do you already have children?',
+   sub:'Be upfront — this shapes what you need from a relationship right now.',
+   opts:['No children','Yes — they live with me full-time','Yes — co-parenting, they visit','Yes — adult children, out of the home']},
+
+  // LIFESTYLE & MONEY
+  {id:'allowance',cat:'lifestyle',w:2,db:false,
+   text:'Do you believe in a partner or girlfriend allowance?',
+   sub:'In SA, many people expect financial support from a partner as a form of care. Where do you honestly stand?',
+   opts:['Yes — a partner should give an allowance','Yes, but it depends on the situation','No — I prefer financial independence','Open to discussing it together']},
+  {id:'money',cat:'lifestyle',w:1,db:false,
+   text:'What is your spending style?',
+   sub:'Money is one of the top relationship stressors in SA.',
+   opts:['I save aggressively — future first','I save but treat myself too','I enjoy spending — life is short','Working on my money habits']},
+  {id:'public_private',cat:'lifestyle',w:1,db:false,
+   text:'Do you prefer a public or private relationship?',
+   sub:'How much of your relationship belongs on social media?',
+   opts:['Very public — I love sharing our life online','Selective — some things shared, some private','Mostly private — relationship stays between us','Completely private — no social media']},
+
+  // RELATIONSHIP
+  {id:'family_inv',cat:'relationship',w:2,db:false,
+   text:'How involved should each other\'s families be in your relationship?',
+   sub:'In many SA cultures, family involvement is deep and expected.',
+   opts:['Very involved — family is central to us','Moderately involved — we keep balance','Minimal — our relationship stays private','Still figuring out my family dynamics']},
+  {id:'loyalty',cat:'relationship',w:2,db:false,
+   text:'What does loyalty mean to you in a relationship?',
+   sub:'Loyalty means different things to different people in SA.',
+   opts:['Never entertaining anyone else — emotionally or physically','Being honest even when it\'s hard','Always having their back publicly, no matter what','Putting the relationship above all other people']},
+
+  // FAITH & CULTURE
+  {id:'rel_imp',cat:'faith',w:2,db:false,type:'scale',min:1,max:5,
+   text:'How central is religion or spirituality in your daily life?',
+   sub:'Rate from 1 (not at all) to 5 (completely central to everything I do).',
+   labs:['Not important','Completely central']},
+  {id:'traditional',cat:'faith',w:1,db:false,
+   text:'How important are traditional cultural practices to you?',
+   sub:'Lobola, umabo, ukwenda — how much do these matter to you?',
+   opts:['Very important — culture is central to who I am','Important but I\'m flexible','Somewhat important — I respect it','Not important to me personally']},
+
+  // POWER & RESPECT
+  {id:'gender_roles',cat:'power',w:2,db:false,
+   text:'What are your views on gender roles in a relationship?',
+   sub:'In SA, views range widely — from traditional to fully equal. Be honest.',
+   opts:['Traditional — man leads, woman supports the home','Mostly traditional with modern flexibility','Equal partnership — both lead and contribute','Fluid — roles depend on each person\'s strengths']},
+  {id:'financial_lead',cat:'power',w:1,db:false,
+   text:'Who should be the primary financial provider?',
+   sub:'Financial expectations are one of SA\'s biggest unspoken relationship conflicts.',
+   opts:['The man should provide for the family','Both partners contribute equally','Whoever earns more takes the lead','Finances should be agreed together openly']}
+];
+
+const CAT_LABELS={values:'Values & life goals',lifestyle:'Lifestyle & money',relationship:'Relationship expectations',faith:'Faith & culture',power:'Power & respect'};
+const CAT_CHIPS={values:'cc-v',lifestyle:'cc-l',relationship:'cc-r',faith:'cc-s',power:'cc-p'};
+const S={A:{},B:{},qA:{},qB:{},iA:0,iB:0};
+
+function goTo(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+
+function spawnHearts(){
+  const bg=document.getElementById('hbg');if(!bg)return;
+  for(let i=0;i<14;i++){const h=document.createElement('div');h.className='heart-float';h.textContent='♥';h.style.left=Math.random()*100+'%';h.style.animationDuration=(6+Math.random()*8)+'s';h.style.animationDelay=(Math.random()*6)+'s';h.style.fontSize=(1+Math.random()*1.8)+'rem';bg.appendChild(h);}
+}
+spawnHearts();
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tb-'+t).classList.add('active');
+  document.getElementById('form-a').style.display=t==='a'?'flex':'none';
+  document.getElementById('form-b').style.display=t==='b'?'flex':'none';
+}
+
+function startQuiz(){
+  S.A={name:document.getElementById('na').value||'Person A',gender:document.getElementById('ga').value||'',culture:document.getElementById('cua').value||'Not specified',religion:document.getElementById('ra').value||'Not specified'};
+  S.B={name:document.getElementById('nb').value||'Person B',gender:document.getElementById('gb').value||'',culture:document.getElementById('cub').value||'Not specified',religion:document.getElementById('rb').value||'Not specified'};
+  S.qA={};S.qB={};S.iA=0;S.iB=0;
+  document.getElementById('av-a').textContent=S.A.name[0].toUpperCase();
+  document.getElementById('wn-a').textContent=S.A.name;
+  renderQ('a');goTo('sc-qa');
+}
+
+function renderQ(p){
+  const i=p==='a'?S.iA:S.iB;
+  const q=QS[i];
+  const ans=p==='a'?S.qA:S.qB;
+  const panel=document.getElementById('qp-'+p);
+  let h=`<div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.7rem"><div class="cchip ${CAT_CHIPS[q.cat]}">${CAT_LABELS[q.cat]}</div>${q.db?'<div class="db-flag">♥ Deal-breaker</div>':''}</div>`;
+  h+=`<div class="qnum">Question ${i+1} of ${QS.length}</div>`;
+  h+=`<div class="qtext">${q.text}</div>`;
+  h+=`<div class="qsub">${q.sub}</div>`;
+  if(q.type==='scale'){
+    h+=`<div class="srow">`;
+    for(let v=q.min;v<=q.max;v++){const sel=ans[q.id]===v?' sel':'';h+=`<button class="sbtn${sel}" onclick="selS('${p}','${q.id}',${v})">${v}</button>`;}
+    h+=`</div><div class="slabs"><span>${q.labs[0]}</span><span>${q.labs[1]}</span></div>`;
+  } else {
+    h+=`<div class="opts">`;
+    q.opts.forEach((o,idx)=>{const sel=ans[q.id]===idx?' sel':'';h+=`<button class="opt${sel}" onclick="selO('${p}','${q.id}',${idx})"><div class="odot"></div><span>${o}</span></button>`;});
+    h+=`</div>`;
+  }
+  panel.innerHTML=h;
+  updProg(p);
+  document.getElementById('bn-'+p).disabled=ans[q.id]===undefined;
+  const isLast=i===QS.length-1;
+  document.getElementById('bn-'+p).textContent=isLast?(p==='a'?'Lock my answers ♥':'Reveal our score ♥'):'Next ♥';
+}
+
+function selO(p,qid,val){const a=p==='a'?S.qA:S.qB;a[qid]=val;renderQ(p)}
+function selS(p,qid,val){const a=p==='a'?S.qA:S.qB;a[qid]=val;renderQ(p)}
+
+function updProg(p){
+  const a=p==='a'?S.qA:S.qB;
+  const c=Object.keys(a).length;
+  const pct=Math.round((c/QS.length)*100);
+  document.getElementById('pf-'+p).style.width=pct+'%';
+  document.getElementById('pl-'+p).textContent=`${c} of ${QS.length} answered`;
+}
+
+function nextQ(p){
+  const i=p==='a'?S.iA:S.iB;
+  if(i===QS.length-1){
+    if(p==='a'){document.getElementById('tname').textContent=S.A.name;goTo('sc-trans');}
+    else calcResults();
+  } else {if(p==='a')S.iA++;else S.iB++;renderQ(p);}
+}
+
+function prevQ(p){
+  if(p==='a'&&S.iA>0){S.iA--;renderQ('a');}
+  if(p==='b'&&S.iB>0){S.iB--;renderQ('b');}
+}
+
+function startQuizB(){
+  S.iB=0;
+  document.getElementById('av-b').textContent=S.B.name[0].toUpperCase();
+  document.getElementById('wn-b').textContent=S.B.name;
+  renderQ('b');goTo('sc-qb');
+}
+
+function calcResults(){
+  const A=S.qA,B=S.qB;
+  let dbHit=null,total=0,max=0;
+  const cat={values:{g:0,m:0},lifestyle:{g:0,m:0},relationship:{g:0,m:0},faith:{g:0,m:0},power:{g:0,m:0}};
+  QS.forEach(q=>{
+    const a=A[q.id],b=B[q.id];
+    if(a===undefined||b===undefined)return;
+    if(q.db){const match=q.type==='scale'?Math.abs(a-b)<=1:a===b;if(!match&&!dbHit)dbHit=q;}
+    let qs=0;
+    if(q.type==='scale'){const d=Math.abs(a-b),mx=q.max-q.min;qs=q.w*(1-(d/mx))*100;}
+    else{const d=Math.abs(a-b),nx=q.opts.length-1;qs=q.w*(1-(d/nx))*100;}
+    total+=qs;max+=q.w*100;
+    cat[q.cat].g+=qs;cat[q.cat].m+=q.w*100;
+  });
+  const score=dbHit?0:Math.round((total/max)*100);
+  const pcts={};
+  Object.keys(cat).forEach(k=>{pcts[k]=cat[k].m>0?Math.round((cat[k].g/cat[k].m)*100):0;});
+  renderResults(score,dbHit,pcts);
+}
+
+function renderResults(score,db,pcts){
+  const nA=S.A.name,nB=S.B.name;
+  document.getElementById('rn').textContent=score;
+  const arc=document.getElementById('sarc');
+  const circ=295.3;
+  arc.style.strokeDashoffset=circ-(circ*(score/100));
+  arc.style.stroke=score>=65?'#6FCF97':score>=40?'#F2C94C':'#FFAABC';
+  const pill=document.getElementById('bpill');
+  let headline,sub;
+  if(db){
+    pill.className='bpill bp-lo';pill.textContent='Deal-breaker alert';
+    headline='A fundamental mismatch was found';
+    sub=`${nA} and ${nB} gave incompatible answers on a deal-breaker. The score is forced to zero — better to know now than six months in.`;
+    document.getElementById('dbz').innerHTML=`<div class="db-alert"><div class="db-icon">🚫</div><div class="db-body"><h4>Deal-breaker: ${db.text}</h4><p>You gave incompatible answers here. This forces the score to zero regardless of everything else — the platform protecting both of you.</p></div></div>`;
+  } else if(score>=75){
+    pill.className='bpill bp-hi';pill.textContent='Strong compatibility';
+    headline=`${nA} & ${nB} — a strong foundation`;
+    sub='You share core values and life direction. The data says this match is genuinely worth exploring fully.';
+    document.getElementById('dbz').innerHTML='';
+  } else if(score>=45){
+    pill.className='bpill bp-mi';pill.textContent='Promising — worth exploring';
+    headline='Compatible in many ways, different in others';
+    sub=`${nA} and ${nB} align strongly in several areas but have real differences worth discussing openly.`;
+    document.getElementById('dbz').innerHTML='';
+  } else {
+    pill.className='bpill bp-lo';pill.textContent='Significant gaps';
+    headline='Major differences to navigate';
+    sub=`${nA} and ${nB} diverge on several core values. Not impossible — but many honest conversations lie ahead.`;
+    document.getElementById('dbz').innerHTML='';
+  }
+  document.getElementById('sch').textContent=headline;
+  document.getElementById('scs').textContent=sub;
+
+  setTimeout(()=>{
+    [['bv','pv','values'],['bli','pli','lifestyle'],['br','pr','relationship'],['bf','pf','faith'],['bpp','pp','power']].forEach(([bid,pid,cat])=>{
+      document.getElementById(bid).style.width=pcts[cat]+'%';
+      document.getElementById(pid).textContent=pcts[cat]+'%';
+    });
+  },350);
+
+  document.getElementById('ag').innerHTML=getAligns().map(p=>`<div class="acard ${p.t}"><div class="at ${p.t==='good'?'agree':'warn'}">${p.t==='good'?'♥ You agree':'♦ Worth discussing'}</div><div class="atext">${p.txt}</div></div>`).join('');
+  document.getElementById('sl').innerHTML=getStarters().map((s,i)=>`<div class="starter"><div class="stnum">${i+1}</div><div class="sttext">${s}</div></div>`).join('');
+
+  const rA=S.A.religion,rB=S.B.religion,cA=S.A.culture,cB=S.B.culture;
+  const rm=rA===rB,cm=cA===cB;
+  document.getElementById('cb-box').innerHTML=`
+    <div class="crow"><div class="ck">Religion alignment</div><div class="cv"><div class="dot ${rm?'dg':'da'}"></div>${rm?'Same faith tradition':'Different faith backgrounds — discuss expectations'}</div></div>
+    <div class="crow"><div class="ck">Cultural background</div><div class="cv"><div class="dot ${cm?'dg':'da'}"></div>${cm?'Shared cultural world':'Cross-cultural match — family expectations may differ'}</div></div>
+    <div class="crow"><div class="ck">${nA}</div><div class="cv">${cA} · ${rA}</div></div>
+    <div class="crow"><div class="ck">${nB}</div><div class="cv">${cB} · ${rB}</div></div>
+  `;
+  goTo('sc-results');
+}
+
+function getAligns(){
+  const A=S.qA,B=S.qB,pts=[];
+  const add=(cond,g,w)=>pts.push(cond?{t:'good',txt:g}:{t:'watch',txt:w});
+  if(A.want_kids!==undefined&&B.want_kids!==undefined)add(A.want_kids===B.want_kids,'You want the same thing on children — one of the biggest alignment wins possible.','Your answers on children differ. This is the #1 long-term dealbreaker in SA — talk about it soon.');
+  if(A.intention!==undefined&&B.intention!==undefined)add(A.intention===B.intention,'You\'re both looking for the same kind of relationship right now — serious vs. casual alignment is crucial.','You\'re at different stages of what you want. This gap causes the most heartbreak if left unaddressed.');
+  if(A.allowance!==undefined&&B.allowance!==undefined)add(Math.abs(A.allowance-B.allowance)<=1,'Your views on partner allowance are aligned — a very common unspoken conflict in SA relationships.','You have different views on allowance. In SA this causes real tension — have the conversation early.');
+  if(A.gender_roles!==undefined&&B.gender_roles!==undefined)add(Math.abs(A.gender_roles-B.gender_roles)<=1,'You share similar views on gender roles — day-to-day dynamics will feel natural.','You have different expectations around gender roles. This shapes everything from chores to decision-making.');
+  while(pts.length<4)pts.push({t:'good',txt:'Your faith and cultural values are close — fewer hidden expectations to navigate.'});
+  return pts.slice(0,4);
+}
+
+function getStarters(){
+  const A=S.qA,B=S.qB,s=[];
+  if(A.allowance!==undefined&&B.allowance!==undefined&&Math.abs(A.allowance-B.allowance)>=2)s.push('"What does financial support in a relationship mean to you — do you believe a partner should give an allowance?"');
+  if(A.gender_roles!==undefined&&B.gender_roles!==undefined&&Math.abs(A.gender_roles-B.gender_roles)>=1)s.push('"How do you see gender roles working in a relationship — what does the man\'s role look like vs. the woman\'s in your ideal partnership?"');
+  if(A.loyalty!==undefined&&B.loyalty!==undefined&&A.loyalty!==B.loyalty)s.push('"What does loyalty actually mean to you day-to-day — how would you know if someone was truly loyal?"');
+  if(A.family_inv!==undefined&&B.family_inv!==undefined&&Math.abs(A.family_inv-B.family_inv)>=1)s.push('"How involved is your family in your relationship decisions — and how involved do you want them to be?"');
+  s.push('"What does respect from a partner look like to you on an ordinary day — not just the big moments?"');
+  s.push('"Is there something about your culture or faith I need to truly understand about you before we go further?"');
+  return s.slice(0,3);
+}
+
+function runDemo(){
+  S.A={name:'Thandi',gender:'Woman',culture:'Zulu',religion:'Christian — mainline'};
+  S.B={name:'Sipho',gender:'Man',culture:'Sotho (Sesotho)',religion:'Christian — Zionist / African Independent Church'};
+  S.qA={want_kids:0,intention:0,monogamy:0,man_cheat:0,marriage:1,have_kids:0,allowance:0,money:1,public_private:1,family_inv:0,loyalty:0,rel_imp:4,traditional:0,gender_roles:2,financial_lead:1};
+  S.qB={want_kids:0,intention:0,monogamy:0,man_cheat:0,marriage:1,have_kids:0,allowance:1,money:2,public_private:2,family_inv:1,loyalty:3,rel_imp:5,traditional:0,gender_roles:0,financial_lead:0};
+  calcResults();
+}
+</script>
+</html>
