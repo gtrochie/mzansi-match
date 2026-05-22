@@ -251,7 +251,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
         </select>
       </div>
       <div class="fg"><label>Cultural background</label>
-        <select id="cua"><option value="">Select...</option><option>Zulu</option><option>Xhosa</option><option>Ndebele</option><option>Venda</option><option>Pedi (Sepedi)</option><option>Sotho (Sesotho)</option><option>Tswana</option><option>Tsonga</option><option>Lobedu</option><option>Afrikaner</option><option>English-speaking South African</option><option>Indian South African</option><option>Coloured</option><option>Mixed heritage</option><option>Other</option><option>Prefer not to say</option></select>
+        <select id="cua"><option value="">Select...</option><option>Zulu</option><option>Xhosa</option><option>Ndebele</option><option>Venda</option><option>Swati (Swazi)</option><option>Pedi (Sepedi)</option><option>Sotho (Sesotho)</option><option>Tswana</option><option>Tsonga</option><option>Lobedu</option><option>Afrikaner</option><option>English-speaking South African</option><option>Indian South African</option><option>Coloured</option><option>Mixed heritage</option><option>Other</option><option>Prefer not to say</option></select>
       </div>
       <div class="fg"><label>Religion</label>
         <select id="ra"><option value="">Select...</option><option>Christian — mainline</option><option>Christian — charismatic / pentecostal</option><option>Christian — Zionist / African Independent Church</option><option>Muslim</option><option>Hindu</option><option>Jewish</option><option>Traditional African beliefs</option><option>No religion / Atheist</option><option>Other</option></select>
@@ -281,7 +281,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
         </select>
       </div>
       <div class="fg"><label>Cultural background</label>
-        <select id="cub"><option value="">Select...</option><option>Zulu</option><option>Xhosa</option><option>Ndebele</option><option>Venda</option><option>Pedi (Sepedi)</option><option>Sotho (Sesotho)</option><option>Tswana</option><option>Tsonga</option><option>Lobedu</option><option>Afrikaner</option><option>English-speaking South African</option><option>Indian South African</option><option>Coloured</option><option>Mixed heritage</option><option>Other</option><option>Prefer not to say</option></select>
+        <select id="cub"><option value="">Select...</option><option>Zulu</option><option>Xhosa</option><option>Ndebele</option><option>Venda</option><option>Swati (Swazi)</option><option>Pedi (Sepedi)</option><option>Sotho (Sesotho)</option><option>Tswana</option><option>Tsonga</option><option>Lobedu</option><option>Afrikaner</option><option>English-speaking South African</option><option>Indian South African</option><option>Coloured</option><option>Mixed heritage</option><option>Other</option><option>Prefer not to say</option></select>
       </div>
       <div class="fg"><label>Religion</label>
         <select id="rb"><option value="">Select...</option><option>Christian — mainline</option><option>Christian — charismatic / pentecostal</option><option>Christian — Zionist / African Independent Church</option><option>Muslim</option><option>Hindu</option><option>Jewish</option><option>Traditional African beliefs</option><option>No religion / Atheist</option><option>Other</option></select>
@@ -334,19 +334,25 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 <div id="sc-results" class="screen">
   <div class="rhead">
     <div class="logo-lk"><span class="logo-h">♥</span><span class="logo-t">Mzansi Match — Love Report</span></div>
-    <div class="score-w">
-      <div class="sring">
-        <svg width="110" height="110" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="47" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
-          <circle cx="55" cy="55" r="47" fill="none" stroke="#C0405A" stroke-width="6" stroke-linecap="round"
-            id="sarc" stroke-dasharray="295.3" stroke-dashoffset="295.3"/>
-        </svg>
-        <div class="ring-in"><div class="ring-n" id="rn">—</div><div class="ring-l">/ 100</div></div>
-      </div>
-      <div class="smeta">
-        <div id="bpill" class="bpill bp-hi">High compatibility</div>
-        <h2 id="sch">Calculating...</h2>
-        <p id="scs"></p>
+    <div style="margin-top:1.2rem">
+      <div id="bpill" class="bpill bp-hi">High compatibility</div>
+      <h2 id="sch" style="color:var(--warm-white);font-size:1.35rem;margin:0.3rem 0 0.4rem"></h2>
+      <p id="scs" style="color:#D4A8B0;font-size:0.83rem;line-height:1.6;max-width:380px;margin-bottom:1.3rem"></p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:140px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:1.1rem 1.2rem;text-align:center">
+          <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:#D4A8B0;margin-bottom:0.6rem;font-weight:700">Compatibility Score</div>
+          <div id="rn" style="font-family:'Playfair Display',serif;font-size:2.8rem;line-height:1;margin-bottom:0.2rem;color:var(--warm-white)">—</div>
+          <div style="font-size:0.65rem;color:#D4A8B0;margin-bottom:0.7rem">out of 100</div>
+          <div style="height:5px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden">
+            <div id="score-bar" style="height:100%;width:0%;border-radius:3px;background:#6FCF97;transition:width 1s ease"></div>
+          </div>
+        </div>
+        <div id="db-card" style="flex:1;min-width:140px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;padding:1.1rem 1.2rem;text-align:center">
+          <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:#D4A8B0;margin-bottom:0.6rem;font-weight:700">Deal-breaker Status</div>
+          <div id="db-icon-big" style="font-size:2rem;margin-bottom:0.3rem">✅</div>
+          <div id="db-status-text" style="font-size:0.78rem;font-weight:700;margin-bottom:0.35rem;color:#6FCF97">None detected</div>
+          <div id="db-detail" style="font-size:0.7rem;color:#D4A8B0;line-height:1.45"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -555,41 +561,60 @@ function calcResults(){
     total+=qs;max+=q.w*100;
     cat[q.cat].g+=qs;cat[q.cat].m+=q.w*100;
   });
-  const score=dbHit?0:Math.round((total/max)*100);
+  // Always show real score — deal-breakers shown separately
+  const score=Math.round((total/max)*100);
   const pcts={};
   Object.keys(cat).forEach(k=>{pcts[k]=cat[k].m>0?Math.round((cat[k].g/cat[k].m)*100):0;});
+  // Save to backend silently
+  saveResultsToBackend(score,dbHit,pcts);
   renderResults(score,dbHit,pcts);
 }
 
 function renderResults(score,db,pcts){
   const nA=S.A.name,nB=S.B.name;
+  // ── Compatibility score card ──
   document.getElementById('rn').textContent=score;
-  const arc=document.getElementById('sarc');
-  const circ=295.3;
-  arc.style.strokeDashoffset=circ-(circ*(score/100));
-  arc.style.stroke=score>=65?'#6FCF97':score>=40?'#F2C94C':'#FFAABC';
+  const scoreColor=score>=75?'#6FCF97':score>=45?'#F2C94C':'#FFAABC';
+  document.getElementById('rn').style.color=scoreColor;
+  document.getElementById('score-bar').style.width=score+'%';
+  document.getElementById('score-bar').style.background=scoreColor;
+  // ── Deal-breaker card ──
+  const dbCard=document.getElementById('db-card');
+  const dbIcon=document.getElementById('db-icon-big');
+  const dbText=document.getElementById('db-status-text');
+  const dbDetail=document.getElementById('db-detail');
+  if(db){
+    dbCard.style.background='rgba(192,64,90,0.2)';
+    dbCard.style.borderColor='rgba(255,170,188,0.35)';
+    dbIcon.textContent='⚠️';
+    dbText.style.color='#FFAABC';
+    dbText.textContent='Deal-breaker found';
+    dbDetail.textContent=db.text;
+    document.getElementById('dbz').innerHTML=`<div class="db-alert"><div class="db-icon">⚠️</div><div class="db-body"><h4>Deal-breaker: ${db.text}</h4><p>You gave incompatible answers here. Your compatibility score above still shows how well you match overall — but this issue must be discussed openly before going further. Don't ignore it.</p></div></div>`;
+  } else {
+    dbCard.style.background='rgba(45,90,61,0.2)';
+    dbCard.style.borderColor='rgba(111,207,151,0.3)';
+    dbIcon.textContent='✅';
+    dbText.style.color='#6FCF97';
+    dbText.textContent='None detected';
+    dbDetail.textContent='No fundamental mismatches found';
+    document.getElementById('dbz').innerHTML='';
+  }
+  // ── Pill and headline ──
   const pill=document.getElementById('bpill');
   let headline,sub;
-  if(db){
-    pill.className='bpill bp-lo';pill.textContent='Deal-breaker alert';
-    headline='A fundamental mismatch was found';
-    sub=`${nA} and ${nB} gave incompatible answers on a deal-breaker. The score is forced to zero — better to know now than six months in.`;
-    document.getElementById('dbz').innerHTML=`<div class="db-alert"><div class="db-icon">🚫</div><div class="db-body"><h4>Deal-breaker: ${db.text}</h4><p>You gave incompatible answers here. This forces the score to zero regardless of everything else — the platform protecting both of you.</p></div></div>`;
-  } else if(score>=75){
+  if(score>=75){
     pill.className='bpill bp-hi';pill.textContent='Strong compatibility';
     headline=`${nA} & ${nB} — a strong foundation`;
     sub='You share core values and life direction. The data says this match is genuinely worth exploring fully.';
-    document.getElementById('dbz').innerHTML='';
   } else if(score>=45){
     pill.className='bpill bp-mi';pill.textContent='Promising — worth exploring';
     headline='Compatible in many ways, different in others';
-    sub=`${nA} and ${nB} align strongly in several areas but have real differences worth discussing openly.`;
-    document.getElementById('dbz').innerHTML='';
+    sub=`${nA} and ${nB} align well in several areas but have real differences worth discussing openly.`;
   } else {
     pill.className='bpill bp-lo';pill.textContent='Significant gaps';
     headline='Major differences to navigate';
     sub=`${nA} and ${nB} diverge on several core values. Not impossible — but many honest conversations lie ahead.`;
-    document.getElementById('dbz').innerHTML='';
   }
   document.getElementById('sch').textContent=headline;
   document.getElementById('scs').textContent=sub;
@@ -643,6 +668,58 @@ function runDemo(){
   S.qA={want_kids:0,intention:0,monogamy:0,man_cheat:0,marriage:1,have_kids:0,allowance:0,money:1,public_private:1,family_inv:0,loyalty:0,rel_imp:4,traditional:0,gender_roles:2,financial_lead:1};
   S.qB={want_kids:0,intention:0,monogamy:0,man_cheat:0,marriage:1,have_kids:0,allowance:1,money:2,public_private:2,family_inv:1,loyalty:3,rel_imp:5,traditional:0,gender_roles:0,financial_lead:0};
   calcResults();
+}
+
+// ── API INTEGRATION ─────────────────────────────────────
+// Change this to your Railway URL when deployed
+const API_URL = 'https://mzansi-match-production.up.railway.app';
+
+async function saveResultsToBackend(score, db, pcts){
+  // Don't save demo results
+  if(S.A.name==='Thandi'&&S.B.name==='Sipho') return;
+  try {
+    const payload = {
+      user_a: {
+        name: S.A.name,
+        gender: S.A.gender||null,
+        city: S.A.city||null,
+        culture: S.A.culture||null,
+        religion: S.A.religion||null
+      },
+      user_b: {
+        name: S.B.name,
+        gender: S.B.gender||null,
+        city: S.B.city||null,
+        culture: S.B.culture||null,
+        religion: S.B.religion||null
+      },
+      answers_a: S.qA,
+      answers_b: S.qB,
+      score: score,
+      dealbreaker_hit: !!db,
+      dealbreaker_question: db ? db.text : null,
+      values_pct: pcts.values||0,
+      lifestyle_pct: pcts.lifestyle||0,
+      relationship_pct: pcts.relationship||0,
+      faith_pct: pcts.faith||0,
+      power_pct: pcts.power||0
+    };
+
+    const res = await fetch(`${API_URL}/quiz/submit`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    if(res.ok){
+      console.log('✅ Results saved to Mzansi Match database');
+    } else {
+      console.warn('⚠️ Could not save results:', res.status);
+    }
+  } catch(err){
+    // Silent fail — don't break the user experience if API is down
+    console.warn('⚠️ API not reachable:', err.message);
+  }
 }
 </script>
 </html>
