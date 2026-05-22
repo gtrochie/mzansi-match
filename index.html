@@ -190,6 +190,7 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 .btn-cg{background:transparent;color:var(--blush);border:1px solid rgba(242,191,191,0.25);padding:0.8rem 1.4rem;font-family:'Lato',sans-serif;font-size:0.85rem;cursor:pointer;border-radius:3px;transition:all 0.2s}
 .btn-cg:hover{border-color:var(--blush)}
 </style>
+<script src="https://js.paystack.co/v1/inline.js"></script>
 
 <!-- LANDING -->
 <div id="sc-land" class="screen active">
@@ -372,17 +373,53 @@ h1,h2,h3{font-family:'Playfair Display',serif}
     <div class="slist" id="sl"></div>
     <div class="slabel">Cultural &amp; religious context</div>
     <div class="cbox" id="cb-box"></div>
-    <div class="cta">
+    <!-- LOCKED FULL REPORT (shown before payment) -->
+    <div id="locked-report" class="cta">
       <h3>Unlock the full love report</h3>
       <p>This preview shows your headline score. The full report includes deeper cultural analysis, a 6-month relationship forecast, and a personalised date-one guide.</p>
       <div class="prow">
-        <div class="pc"><strong>R99</strong>Single full report</div>
-        <div class="pc"><strong>R399</strong>5-pack · save R96</div>
+        <div class="pc" onclick="payNow(99,'single')" style="cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(192,64,90,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'"><strong>R99</strong>Single full report</div>
+        <div class="pc" onclick="payNow(399,'fivepack')" style="cursor:pointer;transition:all 0.2s" onmouseover="this.style.background='rgba(192,64,90,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.07)'"><strong>R399</strong>5-pack · save R96</div>
         <div class="pc"><strong>R2/check</strong>B2B API</div>
       </div>
       <div class="cta-btns">
-        <button class="btn-cm" onclick="alert('Paystack coming in week 3!')">Get full report — R99 ♥</button>
+        <button class="btn-cm" onclick="payNow(99,'single')">Get full report — R99 ♥</button>
         <button class="btn-cg" onclick="goTo('sc-land')">Start a new check</button>
+      </div>
+    </div>
+
+    <!-- FULL REPORT (shown after payment) -->
+    <div id="full-report" style="display:none">
+      <div style="background:#F0FFF7;border:1px solid #9AE6B4;border-radius:6px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:0.85rem;align-items:center">
+        <div style="font-size:1.5rem">✅</div>
+        <div>
+          <div style="font-weight:700;color:#2D5A3D;font-size:0.9rem;margin-bottom:0.2rem">Full report unlocked!</div>
+          <div style="font-size:0.82rem;color:#2D5A3D">Payment confirmed. Your complete Mzansi Match love report is below.</div>
+        </div>
+      </div>
+
+      <div class="slabel">6-month relationship forecast</div>
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:1.2rem 1.4rem;margin-bottom:1.5rem">
+        <div id="forecast-text" style="font-size:0.88rem;line-height:1.7;color:var(--ink)"></div>
+      </div>
+
+      <div class="slabel">Cultural compatibility deep dive</div>
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:1.2rem 1.4rem;margin-bottom:1.5rem">
+        <div id="cultural-deep" style="font-size:0.88rem;line-height:1.7;color:var(--ink)"></div>
+      </div>
+
+      <div class="slabel">Your personalised date-one guide</div>
+      <div style="background:var(--cream);border:1px solid var(--border);border-radius:4px;padding:1.2rem 1.4rem;margin-bottom:1.5rem">
+        <div id="date-guide" style="font-size:0.88rem;line-height:1.7;color:var(--ink)"></div>
+      </div>
+
+      <div class="cta" style="margin-top:1rem">
+        <h3>Share your results ♥</h3>
+        <p style="margin-bottom:1rem">Screenshot your score and share it with your partner or friends on WhatsApp!</p>
+        <div class="cta-btns">
+          <button class="btn-cm" onclick="shareOnWhatsApp()">Share on WhatsApp ♥</button>
+          <button class="btn-cg" onclick="goTo('sc-land')">Start a new check</button>
+        </div>
       </div>
     </div>
   </div>
@@ -720,6 +757,88 @@ async function saveResultsToBackend(score, db, pcts){
     // Silent fail — don't break the user experience if API is down
     console.warn('⚠️ API not reachable:', err.message);
   }
+}
+
+// ── PAYSTACK PAYMENT ─────────────────────────────────────
+const PAYSTACK_KEY = 'pk_test_5e25a2ffffb910c92d85a94c4b02aead5e6c62bc';
+
+function payNow(amount, plan){
+  const email = prompt('Enter your email address to receive your report:');
+  if(!email || !email.includes('@')){
+    alert('Please enter a valid email address.');
+    return;
+  }
+  const handler = PaystackPop.setup({
+    key: PAYSTACK_KEY,
+    email: email,
+    amount: amount * 100, // Paystack uses kobo/cents
+    currency: 'ZAR',
+    ref: 'MM_' + Date.now(),
+    metadata: {
+      person_a: S.A.name,
+      person_b: S.B.name,
+      score: document.getElementById('rn').textContent,
+      plan: plan
+    },
+    callback: function(response){
+      console.log('Payment successful:', response.reference);
+      unlockFullReport();
+    },
+    onClose: function(){
+      console.log('Payment window closed');
+    }
+  });
+  handler.openIframe();
+}
+
+function unlockFullReport(){
+  // Hide locked CTA, show full report
+  document.getElementById('locked-report').style.display='none';
+  document.getElementById('full-report').style.display='block';
+
+  const nA=S.A.name, nB=S.B.name;
+  const score=parseInt(document.getElementById('rn').textContent)||0;
+  const cA=S.A.culture||'your culture', cB=S.B.culture||'their culture';
+  const rA=S.A.religion||'your faith', rB=S.B.religion||'their faith';
+
+  // 6-month forecast
+  let forecast='';
+  if(score>=75){
+    forecast=`Based on your compatibility score of ${score}/100, the next 6 months look promising for ${nA} and ${nB}. Couples who score this highly typically move from the "getting to know you" phase into deeper emotional intimacy within 2–3 months. The key risk to watch: as comfort grows, unspoken expectations surface. Your biggest test will likely come around month 3–4 when the excitement settles and day-to-day reality begins. Use your conversation starters early — couples who talk about money, family, and gender roles in the first month report significantly fewer conflicts at the 6-month mark.`;
+  } else if(score>=45){
+    forecast=`Your score of ${score}/100 suggests ${nA} and ${nB} have a real connection but meaningful differences to navigate. The next 6 months will require more intentional communication than most couples. Months 1–2 will feel exciting and easy. Month 3 is typically where the differences start showing up in small daily moments. Prioritise having the big conversations early — allowance, family involvement, and gender roles. Couples who address these openly in month 1 have a significantly higher chance of reaching month 6 in a stronger place.`;
+  } else {
+    forecast=`A score of ${score}/100 means ${nA} and ${nB} face some real compatibility challenges. This doesn't mean impossible — but the next 6 months will require more conscious effort than most relationships. Focus on building trust and communication before deepening commitment. Don't rush milestones. The couples who succeed with scores in this range are the ones who talk about the hard things early and honestly, rather than hoping the differences resolve themselves.`;
+  }
+  document.getElementById('forecast-text').textContent=forecast;
+
+  // Cultural deep dive
+  const sameRel=rA===rB, sameCul=cA===cB;
+  let cultural=`${nA} (${cA} · ${rA}) and ${nB} (${cB} · ${rB}) bring ${sameCul?'a shared cultural foundation':'different cultural worlds'} to this relationship. `;
+  if(!sameCul){
+    cultural+=`Cross-cultural relationships in SA are increasingly common but come with unique dynamics. Family meetings, traditional practices like lobola, and different expectations around gender roles can become friction points if not discussed early. The good news: cross-cultural couples who communicate openly about their backgrounds tend to build unusually strong relationships — they can't rely on assumptions, so they build genuine understanding instead. `;
+  }
+  if(!sameRel){
+    cultural+=`Interfaith relationships require both partners to be clear about how religion shows up practically — church attendance, raising children in a faith tradition, and how much each partner's faith community will be part of shared life. Have this conversation before month 2.`;
+  } else {
+    cultural+=`Sharing the same faith tradition gives you a strong common foundation — but don't assume shared beliefs mean identical practices. Talk about how faith shows up in daily life for each of you.`;
+  }
+  document.getElementById('cultural-deep').textContent=cultural;
+
+  // Date one guide
+  const guide=`For your first date, ${nA} and ${nB} should aim for somewhere with enough privacy to talk — avoid movies or loud venues. A dinner or coffee works best. Start with lighter topics and use your conversation starters naturally when the moment feels right. Don't try to cover everything in one date. The goal of date one is to leave both people feeling genuinely seen and curious for more. Based on your answers, the topics most worth exploring early are: ${S.qA.allowance!==S.qB.allowance?'financial expectations and allowance, ':''}${Math.abs((S.qA.gender_roles||0)-(S.qB.gender_roles||0))>=1?'gender roles and how you each see the relationship working day-to-day, ':''}family involvement and how close you each are to your families. End the date with a clear next step — don't leave it open-ended.`;
+  document.getElementById('date-guide').textContent=guide;
+
+  // Scroll to full report
+  document.getElementById('full-report').scrollIntoView({behavior:'smooth'});
+}
+
+function shareOnWhatsApp(){
+  const score=document.getElementById('rn').textContent;
+  const nA=S.A.name, nB=S.B.name;
+  const dbStatus=document.getElementById('db-status-text').textContent;
+  const msg=`♥ Mzansi Match Results\n\n${nA} & ${nB}\nCompatibility Score: ${score}/100\nDeal-breaker Status: ${dbStatus}\n\nCheck your compatibility at:\nhttps://gtrochie.github.io/mzansi-match/`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg), '_blank');
 }
 </script>
 </html>
